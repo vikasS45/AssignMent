@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
@@ -28,10 +29,24 @@ const AddUser = ({ navigation }) => {
     return error;
   };
 
+  let emailValidation = (demo, error) => {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (demo.trim() === '') {
+      error = 'Required Field';
+    }
+    if (reg.test(demo) === false) {
+      error = 'Email Is Not Valid';
+    }
+    else {
+      error = '';
+    }
+    return error;
+  };
+
   const validation = () => {
     setFirstNameError(() => required(firstName, firstNameError));
     setLastNameError(() => required(lastName, lastNameError));
-    setEmailError(() => required(email, emailError));
+    setEmailError(() => emailValidation(email, emailError));
   };
 
   const login = async () => {
@@ -55,8 +70,8 @@ const AddUser = ({ navigation }) => {
       }).then(response => response.json())
         .then(responseJson => {
           console.log(responseJson);
-          if(responseJson.email){
-          navigation.navigate('Home');
+          if (responseJson.email) {
+            navigation.navigate('Home');
           }
         });
     }
