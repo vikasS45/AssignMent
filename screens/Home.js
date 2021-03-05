@@ -15,11 +15,13 @@ import {
     Image,
     Dimensions,
     StatusBar,
+    RefreshControl
 } from 'react-native';
 const width = Dimensions.get('window').width;
 
 const Home = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
+    const [refreshLoading, setRefreshLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
     let [offset, setOffset] = useState(1);
     let [loadMore, setLoadMore] = useState(true);
@@ -34,7 +36,7 @@ const Home = ({ navigation }) => {
             .then((responseJson) => {
                 setOffset(offset + 1);
                 setDataSource([...dataSource, ...responseJson.data]);
-                if(dataSource.length > 1){
+                if (dataSource.length > 1) {
                     setLoadMore(false);
                 }
                 setLoading(false);
@@ -44,35 +46,36 @@ const Home = ({ navigation }) => {
             });
     };
 
+    const handleRefresh = () => {
+        setOffset(1);
+        getData();
+    };
+
     const deleteUser = (id) => {
-        fetch(`https://reqres.in/api/users/${id}`)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                getData();
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        fetch(`https://reqres.in/api/users/${id}`, {
+            method: 'DELETE',
+        });
+        console.log(dataSource);
     };
 
     const renderFooter = () => {
         return (
             <View style={styles.footer}>
                 {loadMore &&
-                <TouchableOpacity
-                    activeOpacity={0.9}
-                    onPress={getData}
-                    style={styles.loadMoreBtn}>
-                    <Text style={styles.btnText}>Load More</Text>
-                    {loading ? (
-                        <ActivityIndicator
-                            color="white"
-                            style={{ marginLeft: 8 }} />
-                    ) : null}
-                </TouchableOpacity>
-                 }
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={getData}
+                        style={styles.loadMoreBtn}>
+                        <Text style={styles.btnText}>Load More</Text>
+                        {loading ? (
+                            <ActivityIndicator
+                                color="white"
+                                style={{ marginLeft: 8 }} />
+                        ) : null}
+                    </TouchableOpacity>
+                }
             </View>
-              );
+        );
     };
 
     const ItemView = ({ item }) => {
@@ -109,6 +112,11 @@ const Home = ({ navigation }) => {
                     keyExtractor={(item, index) => index.toString()}
                     enableEmptySections={true}
                     renderItem={ItemView}
+                    scrollEventThrottle={700}
+                    refreshControl={<RefreshControl
+                        colors={["red", "green"]}
+                        refreshing={refreshLoading}
+                        onRefresh={handleRefresh} />}
                     ListFooterComponent={renderFooter}
                 />
                 <TouchableOpacity onPress={() => navigation.navigate('AddUser')}>

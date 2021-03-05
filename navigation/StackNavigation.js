@@ -18,7 +18,7 @@ const StackNavigation = () => {
            <Stack.Screen
                 name="AddUser"
                 component={AddUser}
-                options={{ headerShown: false }}
+                // options={{ headerShown: false }}
             />
         </Stack.Navigator>
     );
