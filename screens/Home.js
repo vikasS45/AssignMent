@@ -17,8 +17,9 @@ import {
     Image,
     Dimensions,
     StatusBar,
-    RefreshControl
+    RefreshControl,
 } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 const width = Dimensions.get('window').width;
 
 const Home = ({ navigation }) => {
@@ -49,7 +50,6 @@ const Home = ({ navigation }) => {
     };
 
     const handleRefresh = () => {
-        setOffset(1);
         getData();
     };
 
@@ -98,7 +98,12 @@ const Home = ({ navigation }) => {
                 </View>
                 <View style={{ flexDirection: 'row-reverse' }}>
                     <TouchableOpacity onPress={() => deleteUser(item.id)}>
-                        <Image source={require('../assets/delete.png')} style={{ height: 20, width: 20, backgroundColor: 'white' }} />
+                    <AntDesign
+                        name="delete"
+                        size={20}
+                        color="#C0C0C0"
+                        style={{ marginLeft: 10 }}
+                    />
                     </TouchableOpacity>
                 </View>
             </View>
